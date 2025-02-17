@@ -3,26 +3,40 @@
 import * as vscode from 'vscode';
 import WebSocket from 'ws';
 import { WebSocketServer } from "ws";
-import { decodeResponse } from './webSocket/webScocketServer';
-
+import { decodeResponse } from './webSocket/webSocketServer';
 let wss: WebSocket.Server | null = null;
-
-// Questa funzione viene chiamata quando l'estensione è attivata
+// This method is called when your extension is activated
+// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
+	// Use the console to output diagnostic information (console.log) and errors (console.error)
+	// This line of code will only be executed once when your extension is activated
+	console.log('Congratulations, your extension "playlivecode" is now active!');
+
+	// The command has been defined in the package.json file
+	// Now provide the implementation of the command with registerCommand
+	// The commandId parameter must match the command field in package.json
+	const disposable = vscode.commands.registerCommand('playlivecode.helloWorld', () => {
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		vscode.window.showInformationMessage('Hello World from playlivecode!');
+	});
+
+	context.subscriptions.push(disposable);
 	const startSession = () => {
-		vscode.window.showInformationMessage('Starting session from TeachflowLocal!');
+		vscode.window.showInformationMessage('Starting session from PlayLiveCodeLocal!');
+		// console.log("hello")
 		startWebSocketServer(9182, context);
 	};
 
 	// Controlla se l'avvio automatico è abilitato
-	const config = vscode.workspace.getConfiguration('teachflow');
+	const config = vscode.workspace.getConfiguration('playlivecode');
 	if (config.get('autoStartSession')) {
 		startSession();
 	}
 
 
-	const startCommand = vscode.commands.registerCommand('teachflow.startsession', startSession);
+	const startCommand = vscode.commands.registerCommand('playlivecode.startsession', startSession);
 	context.subscriptions.push(startCommand);
 
 	context.subscriptions.push({
@@ -31,8 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// Assicura che il server venga chiuso quando l'estensione viene disattivata
 
 
-	const sendMessage = vscode.commands.registerCommand('teachflow.sendTestMessage', () => {
-		const message = { type: 'test', message: 'Hello from Teachflow!' };
+	const sendMessage = vscode.commands.registerCommand('playlivecode.sendTestMessage', () => {
+		const message = { type: 'test', message: 'Hello from PlayLiveCode!' };
 		if (wss) {
 			wss.clients.forEach((client) => {
 				if (client.readyState === WebSocket.OPEN) {
@@ -42,11 +56,17 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}
 	);
-
 	context.subscriptions.push(sendMessage);
 
+	const stopWSServer = vscode.commands.registerCommand('playlivecode.stopWebSocketServer', () => {
+		stopWebSocketServer();
+		vscode.window.showInformationMessage('Session stopped.');
+	});
+	context.subscriptions.push(stopWSServer);
+
+
 	// Registra un comando per abilitare/disabilitare l'avvio automatico
-	const toggleAutoStart = vscode.commands.registerCommand('teachflow.toggleAutoStart', async () => {
+	const toggleAutoStart = vscode.commands.registerCommand('playlivecode.toggleAutoStart', async () => {
 		const currentValue = config.get('autoStartSession', false);
 		const newValue = !currentValue;
 		await config.update('autoStartSession', newValue, vscode.ConfigurationTarget.Global);
@@ -55,14 +75,12 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 	});
 	context.subscriptions.push(toggleAutoStart);
-	
 }
 
-// Questa funzione viene chiamata quando l'estensione è disattivata
+// This method is called when your extension is deactivated
 export function deactivate() {
 	stopWebSocketServer();
 }
-
 // Funzione per avviare il server WebSocket
 function startWebSocketServer(port: number, context: vscode.ExtensionContext) {
 	if (wss) {
@@ -70,9 +88,10 @@ function startWebSocketServer(port: number, context: vscode.ExtensionContext) {
 		return;
 	}
     const workspaceFolders = vscode.workspace.workspaceFolders;
+	// console.log(vscode.workspace);
     if (!workspaceFolders) {
         vscode.window.showErrorMessage(
-            "Teachflow: No workspace is opened."
+            "PlayLiveCode: No workspace is opened."
         );
         return;
     }
@@ -113,8 +132,15 @@ function startWebSocketServer(port: number, context: vscode.ExtensionContext) {
 // Funzione per fermare il server WebSocket
 function stopWebSocketServer() {
 	if (wss) {
-		wss.close(() => {
-			console.log('WebSocket server stopped');
+		wss.clients.forEach((client) => {
+			client.close();
+		});
+		wss.close((err) => {
+			if (err) {
+				console.error('Error closing WebSocket server:', err);
+			} else {
+				console.log('WebSocket server stopped');
+			}
 		});
 		wss = null;
 	}

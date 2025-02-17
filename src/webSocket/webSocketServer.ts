@@ -55,8 +55,11 @@ export async function decodeResponse(data: string, currentDir: string): Promise<
       } catch (err) {
         return err;
       }
+      case "ping":
+        return { type: "ping", status: "ok", message: "Connection is alive" };
+
     default:
-      vscode.window.showErrorMessage("Teachflow: Invalid request type");
+      vscode.window.showErrorMessage("PlayLiveCode: Invalid request type");
       return { type: "error", status: "Invalid request type", message: "Invalid request type" };
   }
 }
