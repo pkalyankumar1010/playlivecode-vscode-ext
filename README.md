@@ -90,6 +90,7 @@ To modify or extend the functionality of this extension:
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue to suggest improvements or create new integration.
+This a copy and edited version of [https://github.com/Signorlupo22/teachflowExtension](https://github.com/Signorlupo22/teachflowExtension) 
 
 ## License
 
