@@ -3,9 +3,14 @@
   "displayName": "Play Live Code",
   "publisher": "pkalyankumar1010",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.4",
+  "icon": "images/extlogo128128.jpg",
   "engines": {
     "vscode": "^1.97.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pkalyankumar1010/playlivecode-vscode-ext"
   },
   "categories": [
     "Other"

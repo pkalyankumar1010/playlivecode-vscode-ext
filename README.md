@@ -1,21 +1,60 @@
-# Play Live Code
+# PlayLiveCode - VS Code Extension 🔁
 
-**Play Live Code** is a Visual Studio Code extension designed to help you kickstart live coding sessions effortlessly. With built-in commands to start sessions, send messages, and manage session settings, this extension aims to streamline your interactive coding experience.
+**Live code execution from browser to VS Code**
 
-## Features
+This extension enables seamless interaction between your browser and VS Code. With the companion Chrome extension [`Send to VSCode`](https://github.com/pkalyankumar1010/send-to-vscode-chrome-ext), you can send code snippets from any webpage (like GitHub, documentation, blogs, etc.) to your local VS Code editor and execute them instantly.
 
-- **Live Session Management:**  
-  Easily start and stop live coding sessions via simple commands.
+---
 
-- **Messaging:**  
-  Send test messages during a live session to verify connectivity and functionality.
+## 🔧 Features
 
-- **Auto Start Toggle:**  
-  Enable or disable auto-start for your live sessions as needed.
+- 💡 **Live code execution**: Send and run code from your browser into your active VS Code terminal.
+- 🧠 **WebSocket Bridge**: Opens a WebSocket server on your local machine (`ws://localhost:9182`) to receive code snippets.
+- 🚀 **Execute from anywhere**: Works with any site that contains code blocks — GitHub, tutorials, blogs, and more.
+- 🔴 **Visual feedback**: Hover over code blocks to see an execution button.
+- 🧪 **Lightweight testing**: Built-in test mechanism to verify WebSocket and command flow.
 
-- **Quick Testing:**  
-  Use the "Hello World" command to quickly check that the extension is working properly.
+---
 
+## 🧩 How It Works
+
+1. **Install this extension** in VS Code:  
+   [`playlivecode-vscode-ext`](https://github.com/pkalyankumar1010/playlivecode-vscode-ext)
+
+2. **Install the companion Chrome extension**:  
+   [`send-to-vscode-chrome-ext`](https://github.com/pkalyankumar1010/send-to-vscode-chrome-ext)
+
+3. **Enable the Chrome extension** on websites where you want to send code.
+
+4. **WebSocket Communication**:
+   - VS Code runs a WebSocket server on `ws://localhost:9182`.
+   - Chrome extension sends code snippets via JSON like:
+     ```json
+     {
+       "type": "execute code",
+       "code": "console.log('Hello from browser!')"
+     }
+     ```
+
+5. **VS Code executes** the code in the currently active terminal.
+
+---
+
+## 🖥️ Use Case Demo
+
+### Browser (Chrome Extension)
+
+- Adds a 🔴 dot on the side of each code block.
+- On hover, shows “Execute Code” button.
+- Sends selected code to VS Code via WebSocket.
+
+### VS Code (This Extension)
+
+- Listens for messages from the browser.
+- Injects received code into the open terminal.
+- Executes it immediately.
+
+---
 ## Installation
 
 ### From the VS Code Marketplace
